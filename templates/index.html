@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <title>Chatbot & Summary Enhancer</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Welcome to Chatbot & Summarizer</h1>
+
+      <!-- Upload Section -->
+      <div class="upload-container">
+        <h2>Upload PDF</h2>
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+          <input
+            type="file"
+            name="file"
+            id="file-input"
+            accept=".pdf"
+            required
+          />
+          <button type="submit">Upload</button>
+        </form>
+        {% if message %}
+        <p style="color: green">{{ message }}</p>
+        {% endif %} {% if error %}
+        <p style="color: red">{{ error }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Buttons for Actions -->
+      {% if uploaded_file %}
+      <div class="action-container">
+        <h2>Generate Content</h2>
+        <form action="/generate_summary" method="POST">
+          <input
+            type="hidden"
+            name="uploaded_file"
+            value="{{ uploaded_file }}"
+          />
+          <button type="submit">Generate Summary</button>
+        </form>
+        <form action="/e_learning" method="POST">
+          <input
+            type="hidden"
+            name="uploaded_file"
+            value="{{ uploaded_file }}"
+          />
+          <input type="hidden" name="summary" value="{{ summary }}" />
+          <button type="submit">E-Learning</button>
+        </form>
+      </div>
+      {% endif %}
+
+      <!-- Summary Section -->
+      {% if summary %}
+      <div class="summary-container">
+        <h2>Summary</h2>
+        <textarea id="summary-text" readonly>{{ summary }}</textarea>
+      </div>
+      {% endif %}
+
+      <!-- E-Learning Section -->
+      {% if chapter_notes %}
+      <div class="e-learning-container">
+        <h2>E-Learning Content</h2>
+        {% for chapter, notes in chapter_notes.items() %}
+        <div class="chapter-container">
+          <h3>Chapter {{ chapter }}</h3>
+          <textarea readonly>{{ notes }}</textarea>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Dashboard Section -->
+      {% if dashboard_data.images or dashboard_data.tables %}
+      <div class="dashboard-container">
+        <h2>Dashboard</h2>
+        <div class="dashboard-content">
+          {% if dashboard_data.images %}
+          <div class="dashboard-images">
+            <h3>Extracted Images</h3>
+            <div class="images-grid">
+              {% for image in dashboard_data.images %}
+              <div class="image-item">
+                <img src="{{ image.src }}" alt="Image with Caption" />
+                <p>{{ image.caption }}</p>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %} {% if dashboard_data.tables %}
+          <div class="dashboard-tables">
+            <h3>Extracted Tables</h3>
+            {% for table in dashboard_data.tables %}
+            <div class="table-container">
+              <h4>{{ table.caption }}</h4>
+              <table>
+                <thead>
+                  <tr>
+                    {% for col in table.columns %}
+                    <th>{{ col }}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in table.rows %}
+                  <tr>
+                    {% for cell in row %}
+                    <td>{{ cell }}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <p>No dashboard data available.</p>
+      {% endif %}
+
+      <!-- Chatbot Floating Widget -->
+      <div class="chat-widget">
+        <div class="chat-header" id="chat-header">
+          <button class="chat-toggle-btn" id="chat-toggle-btn">💬 Chat</button>
+        </div>
+        <div class="chat-container" id="chat-container">
+          <div class="chat-window" id="chat-window">
+            <!-- Chat messages will appear here -->
+          </div>
+          <div class="chat-input">
+            <input
+              type="text"
+              id="user-input"
+              placeholder="Type a message..."
+            />
+            <button id="send-btn">Send</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading Screen -->
+      <div id="loading-screen" class="loading-screen">
+        <img
+          src="{{ url_for('static', filename='images/chill_guy.png') }}"
+          alt="Loading..."
+        />
+        <p>Processing...</p>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>
