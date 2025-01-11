@@ -2,8 +2,21 @@
 <html>
 <head>
     <title>SBHacks 2025</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>Welcome to SBHacks 2025</h1>
+    <nav>
+        <h1>SBHacks 2025</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/upload">Upload</a></li>
+        </ul>
+    </nav>
+    <main>
+        <h2>Welcome to SBHacks 2025</h2>
+        <p>Upload and analyze educational content using AI</p>
+    </main>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
